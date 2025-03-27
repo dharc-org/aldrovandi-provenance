@@ -1,8 +1,8 @@
 # Aldrovandi Provenance
 
-[![Tests](https://github.com/arcangelo7/aldrovandi-provenance/actions/workflows/run-tests.yml/badge.svg)](https://github.com/arcangelo7/aldrovandi-provenance/actions/workflows/run-tests.yml)
+[![Tests](https://github.com/dharc-org/aldrovandi-provenance/actions/workflows/run-tests.yml/badge.svg)](https://github.com/dharc-org/aldrovandi-provenance/actions/workflows/run-tests.yml)
 [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/)
-[![Repo Size](https://img.shields.io/github/repo-size/arcangelo7/aldrovandi-provenance)](https://github.com/arcangelo7/aldrovandi-provenance)
+[![Repo Size](https://img.shields.io/github/repo-size/dharc-org/aldrovandi-provenance)](https://github.com/dharc-org/aldrovandi-provenance)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
 
@@ -30,7 +30,7 @@ If Poetry is not already installed, please follow the installation instructions 
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/aldrovandi-provenance.git
+git clone https://github.com/dharc-org/aldrovandi-provenance.git
 cd aldrovandi-provenance
 
 # Install dependencies with Poetry
