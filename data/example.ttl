@@ -1,0 +1,56 @@
+@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/> .
+@prefix crmdig: <http://www.ics.forth.gr/isl/CRMdig/> .
+@prefix lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix aat: <http://vocab.getty.edu/aat/> .
+@prefix ex: <http://example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# An example of a digitization process with related entities
+ex:item1 a lrmoo:F5_Item ;
+    crm:P2_has_type aat:300028051 ; # manuscripts (documents)
+    rdfs:label "Medieval manuscript MS123" .
+
+ex:device1 a crmdig:D8_Digital_Device ;
+    crm:P2_has_type aat:300379505 ; # digital cameras
+    rdfs:label "Canon EOS 5D Mark IV" .
+
+ex:digitization1 a crmdig:D2_Digitization_Process ;
+    crmdig:L1_digitized ex:item1 ;
+    crmdig:L11_had_output ex:data_object1 ;
+    crm:P4_has_time-span ex:timespan1 ;
+    crm:P14_carried_out_by ex:person1 ;
+    crm:P16_used_specific_object ex:device1 ;
+    crm:P32_used_general_technique aat:300215302 . # digital imaging
+
+ex:data_object1 a crmdig:D9_Data_Object ;
+    rdfs:label "High-resolution digital image of MS123" .
+
+ex:person1 a crm:E21_Person ;
+    rdfs:label "John Smith" .
+
+ex:timespan1 a crm:E52_Time-Span ;
+    crm:P82a_begin_of_the_begin "2023-10-15T10:30:00"^^xsd:dateTime ;
+    crm:P82b_end_of_the_end "2023-10-15T11:45:00"^^xsd:dateTime .
+
+# A software execution that processed the digitized data
+ex:software1 a crmdig:D14_Software ;
+    crm:P2_has_type aat:300312038 ; # graphics software
+    rdfs:label "Adobe Photoshop CC" .
+
+ex:processing1 a crmdig:D10_Software_Execution ;
+    crm:P2_has_type aat:300054636 ; # data processing
+    crmdig:L10_had_input ex:data_object1 ;
+    crmdig:L11_had_output ex:data_object2 ;
+    crm:P4_has_time-span ex:timespan2 ;
+    crm:P14_carried_out_by ex:person1 ;
+    crmdig:L23_used_software_or_firmware ex:software1 .
+
+ex:data_object2 a crmdig:D9_Data_Object ;
+    rdfs:label "Processed image of MS123" ;
+    crm:P130i_features_are_also_found_on ex:data_object1 .
+
+ex:timespan2 a crm:E52_Time-Span ;
+    crm:P82a_begin_of_the_begin "2023-10-15T14:00:00"^^xsd:dateTime ;
+    crm:P82b_end_of_the_end "2023-10-15T16:30:00"^^xsd:dateTime . 

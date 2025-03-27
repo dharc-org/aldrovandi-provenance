@@ -1,0 +1,22 @@
+[project]
+name = "aldrovandi-provenance"
+version = "0.1.0"
+description = "This repository contains tools for managing provenance information for cultural heritage data using the CHAD-AP (Cultural Heritage Acquisition and Digitisation Application Profile) model."
+authors = [
+    {name = "arcangelo7",email = "info@arcangelomassari.com"}
+]
+license = {text = "ISC License"}
+readme = "README.md"
+requires-python = ">=3.10,<4.0.0"
+dependencies = [
+    "rdflib (>=7.1.3,<8.0.0)"
+]
+
+[tool.poetry]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
