@@ -9,7 +9,7 @@ with type prov:Entity.
 import os
 import argparse
 import datetime
-from rdflib import ConjunctiveGraph, URIRef, Namespace, Literal, Dataset
+from rdflib import Dataset, URIRef, Namespace, Literal
 from rdflib.namespace import RDF, XSD, DCTERMS
 from rdflib.util import guess_format
 
@@ -19,10 +19,11 @@ def parse_arguments():
     parser.add_argument('input_directory', help='Directory containing RDF files to process')
     parser.add_argument('output_file', help='Output file for provenance snapshots (N-Quads format)')
     parser.add_argument('--format', help='Force specific input format instead of auto-detection')
+    parser.add_argument('--output-format', help='Output format (default: nquads)', default='nquads')
     parser.add_argument('--agent', help='ORCID of the responsible agent', default="https://orcid.org/0000-0002-8420-0696")
     return parser.parse_args()
 
-def generate_provenance_snapshots(input_directory, output_file, input_format=None, agent_orcid=None):
+def generate_provenance_snapshots(input_directory, output_file, input_format=None, output_format='nquads', agent_orcid=None):
     """
     Generate provenance snapshots from RDF data.
     
@@ -30,10 +31,12 @@ def generate_provenance_snapshots(input_directory, output_file, input_format=Non
         input_directory: Path to directory containing RDF files
         output_file: Path to output file with provenance snapshots (N-Quads format)
         input_format: Optional format to use for all input files (overrides auto-detection)
+        output_format: Format to use for output file (default: nquads)
         agent_orcid: ORCID of the responsible agent
     """
     # Load all input RDF files into a single graph
-    input_graph = ConjunctiveGraph()
+    input_graph = Dataset()
+    default_graph = input_graph.graph()
     
     file_count = 0
     
@@ -72,7 +75,7 @@ def generate_provenance_snapshots(input_directory, output_file, input_format=Non
         
         try:
             print(f"Processing {file_path} as {format_name}...")
-            input_graph.parse(file_path, format=format_name)
+            default_graph.parse(file_path, format=format_name)
             file_count += 1
         except Exception as e:
             print(f"Error processing {file_path}: {str(e)}")
@@ -89,17 +92,17 @@ def generate_provenance_snapshots(input_directory, output_file, input_format=Non
     dataset.namespace_manager.bind('prov', PROV)
     dataset.namespace_manager.bind('dcterms', DCTERMS)
     
-    for prefix, namespace in input_graph.namespaces():
+    for prefix, namespace in input_graph.namespace_manager.namespaces():
         dataset.namespace_manager.bind(prefix, namespace)
     
     subjects = set()
-    for s, p, o in input_graph:
+    for s, p, o in default_graph:
         if isinstance(s, URIRef):
             subjects.add(s)
     
     print(f"Found {len(subjects)} subjects in the input files")
     
-    generation_time = datetime.datetime.now(datetime.timezone.utc).astimezone().isoformat()
+    generation_time = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
     
     responsible_agent = URIRef(agent_orcid)
     
@@ -119,14 +122,14 @@ def generate_provenance_snapshots(input_directory, output_file, input_format=Non
         description = f"Entity <{str(subject)}> was created"
         prov_graph.add((snapshot_uri, DCTERMS.description, Literal(description, lang="en")))
     
-    dataset.serialize(destination=output_file, format='nquads')
-    print(f"Provenance snapshots saved to {output_file}")
+    dataset.serialize(destination=output_file, format=output_format)
+    print(f"Provenance snapshots saved to {output_file} in {output_format} format")
     
 
 def main():
     """Main function."""
     args = parse_arguments()
-    generate_provenance_snapshots(args.input_directory, args.output_file, args.format, args.agent)
+    generate_provenance_snapshots(args.input_directory, args.output_file, args.format, args.output_format, args.agent)
 
 if __name__ == "__main__":
     main() 
