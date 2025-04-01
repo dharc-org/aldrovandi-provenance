@@ -100,14 +100,13 @@ jobs:
         repository: arcangelo7/badges
         actor: arcangelo7
 
-  # Add a new job to deploy to GitHub Pages
-  # deploy-coverage:
-  #   needs: CheckCoverage
-  #   runs-on: ubuntu-latest
-  #   environment:
-  #     name: ${{ github.repository }}/pages
-  #     url: ${{ steps.deployment.outputs.page_url }}
-  #   steps:
-  #     - name: Deploy to GitHub Pages
-  #       id: deployment
-  #       uses: actions/deploy-pages@v4 
+  deploy-coverage:
+    needs: CheckCoverage
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.repository }}/pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 
