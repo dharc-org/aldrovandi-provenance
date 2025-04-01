@@ -1,7 +1,7 @@
 # Aldrovandi Provenance
 
 [![Tests](https://github.com/dharc-org/aldrovandi-provenance/actions/workflows/run-tests.yml/badge.svg)](https://github.com/dharc-org/aldrovandi-provenance/actions/workflows/run-tests.yml)
-[![Coverage](https://byob.yarr.is/arcangelo7/badges/opedharc-org-aldrovandi-provenance-coverage-main)](https://dharc-org.github.io/aldrovandi-provenance/)
+[![Coverage](https://byob.yarr.is/arcangelo7/badges/dharc-org-aldrovandi-provenance-coverage-master)](https://dharc-org.github.io/aldrovandi-provenance/)
 [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/)
 [![Repo Size](https://img.shields.io/github/repo-size/dharc-org/aldrovandi-provenance)](https://github.com/dharc-org/aldrovandi-provenance)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
