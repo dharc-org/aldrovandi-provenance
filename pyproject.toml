@@ -1,6 +1,6 @@
 [project]
 name = "aldrovandi-provenance"
-version = "0.1.0"
+version = "1.0.0"
 description = "This repository contains tools for managing provenance information for cultural heritage data using the CHAD-AP (Cultural Heritage Acquisition and Digitisation Application Profile) model."
 authors = [
     {name = "arcangelo7",email = "info@arcangelomassari.com"}
