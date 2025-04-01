@@ -13,7 +13,7 @@ This repository contains tools for managing provenance information for cultural 
 
 The project provides tools for generating provenance snapshots from RDF data, conforming to the [CHAD-AP specification](https://dharc-org.github.io/chad-ap/current/chad-ap.html).
 
-The provenance model implemented in this project is based on the Open Citations Data Model:
+The provenance model implemented in this project is based on the OpenCitations Data Model:
 
 > Daquino, Marilena; Massari, Arcangelo; Peroni, Silvio; Shotton, David (2018). The OpenCitations Data Model. figshare. Online resource. [https://doi.org/10.6084/m9.figshare.3443876.v8](https://doi.org/10.6084/m9.figshare.3443876.v8)
 
