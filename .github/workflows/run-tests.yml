@@ -47,7 +47,6 @@ jobs:
         
     - name: Run tests with coverage
       run: |
-        poetry run pip install pytest-cov
         poetry run pytest --cov=aldrovandi_provenance --cov-report=xml --cov-report=term
         echo "=== Coverage Report ==="
         poetry run coverage report

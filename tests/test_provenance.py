@@ -84,7 +84,65 @@ def test_provenance_generation(test_environment):
     
     assert (item1_snapshot, RDF.type, PROV.Entity) in item1_prov_graph, "item1 snapshot is not typed as prov:Entity"
     assert (item2_snapshot, RDF.type, PROV.Entity) in item2_prov_graph, "item2 snapshot is not typed as prov:Entity"
+
+def test_input_format_parameter(test_environment):
+    """Test that the input_format parameter works correctly."""
+    # Get test environment variables
+    test_dir = test_environment["test_dir"]
+    test_output = test_environment["test_output"]
     
+    # Create a file with an unknown extension but containing Turtle content
+    test_unknown = os.path.join(test_dir, 'unknown_format.xyz')
+    with open(test_unknown, 'w') as f:
+        f.write("""
+@prefix ex: <http://example.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/> .
+
+ex:item3 a crm:E22_Human-Made_Object ;
+    rdfs:label "Test Object with Unknown Format" .
+        """)
+    
+    # Generate provenance snapshots, specifying the format explicitly
+    agent_orcid = "https://orcid.org/0000-0002-8420-0696"
+    generate_provenance_snapshots(test_dir, test_output, input_format='turtle', agent_orcid=agent_orcid)
+    
+    # Check that the output file was created
+    assert os.path.exists(test_output), "Output file was not created"
+    
+    # Load the output file
+    dataset = Dataset()
+    dataset.parse(test_output, format='nquads')
+    
+    # Define namespaces
+    PROV = Namespace('http://www.w3.org/ns/prov#')
+    
+    # Check that we have the expected named graph for item3
+    item3_graph = URIRef('http://example.org/item3/prov/')
+    actual_graphs = [g.identifier for g in dataset.contexts()]
+    assert item3_graph in actual_graphs, f"Expected graph {item3_graph} not found"
+    
+    # Check that snapshot is typed as prov:Entity
+    item3_prov_graph = dataset.graph(item3_graph)
+    item3_snapshot = URIRef('http://example.org/item3/prov/se/1')
+    assert (item3_snapshot, RDF.type, PROV.Entity) in item3_prov_graph, "item3 snapshot is not typed as prov:Entity"
+
+def test_empty_directory(test_environment):
+    """Test that the script handles empty directories correctly."""
+    # Create an empty directory
+    empty_dir = tempfile.mkdtemp(dir='./tests/')
+    test_output = test_environment["test_output"]
+    
+    try:
+        # Generate provenance snapshots for the empty directory
+        generate_provenance_snapshots(empty_dir, test_output)
+        
+        # Check that the output file was not created
+        assert not os.path.exists(test_output), "Output file should not be created for empty directory"
+    finally:
+        # Clean up
+        if os.path.exists(empty_dir):
+            shutil.rmtree(empty_dir)
 
 if __name__ == '__main__':
     pytest.main() 
