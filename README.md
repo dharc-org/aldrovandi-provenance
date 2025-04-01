@@ -13,11 +13,15 @@ This repository contains tools for managing provenance information for cultural 
 
 The project provides tools for generating provenance snapshots from RDF data, conforming to the [CHAD-AP specification](https://dharc-org.github.io/chad-ap/current/chad-ap.html).
 
+The provenance model implemented in this project is based on the Open Citations Data Model:
+
+> Daquino, Marilena; Massari, Arcangelo; Peroni, Silvio; Shotton, David (2018). The OpenCitations Data Model. figshare. Online resource. [https://doi.org/10.6084/m9.figshare.3443876.v8](https://doi.org/10.6084/m9.figshare.3443876.v8)
+
 The primary feature is generating provenance snapshots from RDF data in various formats, where:
-- Each subject in the input data gets a provenance named graph (subject URI + "/prov/")
-- Each subject gets a snapshot entity in its provenance graph (subject URI + "/prov/se/1")
-- Each snapshot is typed as a prov:Entity
-- Provenance metadata is added, including generation time and responsible agent
+- Provenance information is organized into named graphs
+- Each subject in the input data receives its own provenance graph 
+- Snapshot entities are created to represent the state of cultural heritage objects
+- Provenance metadata includes generation time and responsible agent information
 
 ## Installation
 
@@ -45,14 +49,15 @@ poetry install
 The script processes all RDF files in a directory and generates provenance snapshots:
 
 ```bash
-python -m aldrovandi_provenance.generate_provenance INPUT_DIRECTORY OUTPUT_FILE [--format FORMAT] [--agent AGENT_ORCID]
+python -m aldrovandi_provenance.generate_provenance INPUT_DIRECTORY OUTPUT_FILE --agent AGENT_ORCID --primary-source PRIMARY_SOURCE_URI [--format FORMAT]
 ```
 
 Arguments:
 - `INPUT_DIRECTORY`: Directory containing RDF files to process
 - `OUTPUT_FILE`: Output file for provenance snapshots (N-Quads format)
+- `--agent`: ORCID of the responsible agent (required)
+- `--primary-source`: URI of the primary source for the data (required)
 - `--format`: (Optional) Force specific input format instead of auto-detection
-- `--agent`: (Optional) ORCID of the responsible agent (default: "https://orcid.org/0000-0002-8420-0696")
 
 The script automatically detects RDF file formats based on extensions:
 - `.ttl` - Turtle
@@ -78,13 +83,10 @@ ex:item1 a crm:E22_Human-Made_Object ;
 
 Command:
 ```bash
-python -m aldrovandi_provenance.generate_provenance data/ output.nq
+python -m aldrovandi_provenance.generate_provenance data/ output.nq --agent https://orcid.org/0000-0002-8420-0696 --primary-source https://doi.org/10.5281/zenodo.15102846
 ```
 
-The output will include:
-- Named graph `<http://example.org/item1/prov/>` containing snapshot metadata
-- Information about when the snapshot was created and by whom
-- The snapshot will have type prov:Entity
+The output will include provenance metadata in named graphs, with information about when the snapshot was created, by whom, and the primary source from which the data was derived.
 
 ## Development
 
@@ -93,7 +95,3 @@ The output will include:
 ```bash
 pytest -xvs tests/
 ```
-
-## License
-
-See the LICENSE file for details. 

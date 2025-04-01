@@ -53,7 +53,8 @@ def test_provenance_generation(test_environment):
     
     # Generate provenance snapshots
     agent_orcid = "https://orcid.org/0000-0002-8420-0696"
-    generate_provenance_snapshots(test_dir, test_output, agent_orcid=agent_orcid)
+    primary_source = "https://example.org/primary-source"
+    generate_provenance_snapshots(test_dir, test_output, agent_orcid=agent_orcid, primary_source=primary_source)
     
     # Check that the output file was created
     assert os.path.exists(test_output), "Output file was not created"
@@ -84,6 +85,10 @@ def test_provenance_generation(test_environment):
     
     assert (item1_snapshot, RDF.type, PROV.Entity) in item1_prov_graph, "item1 snapshot is not typed as prov:Entity"
     assert (item2_snapshot, RDF.type, PROV.Entity) in item2_prov_graph, "item2 snapshot is not typed as prov:Entity"
+    
+    # Check for primary source relationship
+    assert (item1_snapshot, PROV.hadPrimarySource, URIRef(primary_source)) in item1_prov_graph, "item1 snapshot missing primary source"
+    assert (item2_snapshot, PROV.hadPrimarySource, URIRef(primary_source)) in item2_prov_graph, "item2 snapshot missing primary source"
 
 def test_input_format_parameter(test_environment):
     """Test that the input_format parameter works correctly."""
@@ -105,7 +110,8 @@ ex:item3 a crm:E22_Human-Made_Object ;
     
     # Generate provenance snapshots, specifying the format explicitly
     agent_orcid = "https://orcid.org/0000-0002-8420-0696"
-    generate_provenance_snapshots(test_dir, test_output, input_format='turtle', agent_orcid=agent_orcid)
+    primary_source = "https://example.org/primary-source"
+    generate_provenance_snapshots(test_dir, test_output, input_format='turtle', agent_orcid=agent_orcid, primary_source=primary_source)
     
     # Check that the output file was created
     assert os.path.exists(test_output), "Output file was not created"
@@ -135,7 +141,9 @@ def test_empty_directory(test_environment):
     
     try:
         # Generate provenance snapshots for the empty directory
-        generate_provenance_snapshots(empty_dir, test_output)
+        agent_orcid = "https://orcid.org/0000-0002-8420-0696"
+        primary_source = "https://example.org/primary-source"
+        generate_provenance_snapshots(empty_dir, test_output, agent_orcid=agent_orcid, primary_source=primary_source)
         
         # Check that the output file was not created
         assert not os.path.exists(test_output), "Output file should not be created for empty directory"

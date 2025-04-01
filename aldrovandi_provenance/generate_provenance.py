@@ -11,7 +11,6 @@ import argparse
 import datetime
 from rdflib import Dataset, URIRef, Namespace, Literal
 from rdflib.namespace import RDF, XSD, DCTERMS
-from rdflib.util import guess_format
 
 def parse_arguments(): # pragma: no cover
     """Parse command line arguments."""
@@ -20,10 +19,11 @@ def parse_arguments(): # pragma: no cover
     parser.add_argument('output_file', help='Output file for provenance snapshots (N-Quads format)')
     parser.add_argument('--format', help='Force specific input format instead of auto-detection')
     parser.add_argument('--output-format', help='Output format (default: nquads)', default='nquads')
-    parser.add_argument('--agent', help='ORCID of the responsible agent', default="https://orcid.org/0000-0002-8420-0696")
+    parser.add_argument('--agent', help='ORCID of the responsible agent', required=True)
+    parser.add_argument('--primary-source', help='URI of the primary source for the data', required=True)
     return parser.parse_args()
 
-def generate_provenance_snapshots(input_directory, output_file, input_format=None, output_format='nquads', agent_orcid=None):
+def generate_provenance_snapshots(input_directory, output_file, input_format=None, output_format='nquads', agent_orcid=None, primary_source=None):
     """
     Generate provenance snapshots from RDF data.
     
@@ -33,8 +33,9 @@ def generate_provenance_snapshots(input_directory, output_file, input_format=Non
         input_format: Optional format to use for all input files (overrides auto-detection)
         output_format: Format to use for output file (default: nquads)
         agent_orcid: ORCID of the responsible agent
+        primary_source: URI of the primary source for the data
     """
-    # Load all input RDF files into a single graph
+
     input_graph = Dataset()
     default_graph = input_graph.graph()
     
@@ -89,7 +90,8 @@ def generate_provenance_snapshots(input_directory, output_file, input_format=Non
     generation_time = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
     
     responsible_agent = URIRef(agent_orcid)
-    
+    primary_source_uri = URIRef(primary_source)
+
     for subject in subjects:
         prov_graph_uri = URIRef(f"{subject}/prov/")
         
@@ -103,6 +105,8 @@ def generate_provenance_snapshots(input_directory, output_file, input_format=Non
         
         prov_graph.add((snapshot_uri, PROV.wasAttributedTo, responsible_agent))
         
+        prov_graph.add((snapshot_uri, PROV.hadPrimarySource, primary_source_uri))
+        
         description = f"Entity <{str(subject)}> was created"
         prov_graph.add((snapshot_uri, DCTERMS.description, Literal(description, lang="en")))
     
@@ -113,7 +117,7 @@ def generate_provenance_snapshots(input_directory, output_file, input_format=Non
 def main(): # pragma: no cover
     """Main function."""
     args = parse_arguments()
-    generate_provenance_snapshots(args.input_directory, args.output_file, args.format, args.output_format, args.agent)
+    generate_provenance_snapshots(args.input_directory, args.output_file, args.format, args.output_format, args.agent, args.primary_source)
 
 if __name__ == "__main__": # pragma: no cover
     main() 
